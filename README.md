@@ -6,34 +6,56 @@ This README provides instructions for the Home Sales assignment, including the s
 
 ## Instructions
 
-### 1. Rename the Notebook
+This assignment was completed using Google Colab.
 
-Rename the provided notebook file `Home_Sales_starter_code.ipynb` to `Home_Sales.ipynb` before proceeding with the assignment.
-
-### 2. Import Necessary PySpark SQL Functions
+### 1. Import Necessary PySpark SQL Functions
 
 Make sure to import the necessary PySpark SQL functions at the beginning of your notebook. Common functions include those from `pyspark.sql.functions`.
 
-```python
-from pyspark.sql.functions import *
+```import os
+# Find the latest version of spark 3.x  from http://www.apache.org/dist/spark/ and enter as the spark version
+# For example:
+# spark_version = 'spark-3.5.0'
+spark_version = 'spark-3.5.0'
+os.environ['SPARK_VERSION']=spark_version
+
+# Install Spark and Java
+!apt-get update
+!apt-get install openjdk-11-jdk-headless -qq > /dev/null
+!wget -q http://archive.apache.org/dist/spark/$SPARK_VERSION/$SPARK_VERSION-bin-hadoop3.tgz
+!tar xf $SPARK_VERSION-bin-hadoop3.tgz
+!pip install -q findspark
+
+# Set Environment Variables
+os.environ["JAVA_HOME"] = "/usr/lib/jvm/java-11-openjdk-amd64"
+os.environ["SPARK_HOME"] = f"/content/{spark_version}-bin-hadoop3"
+
+# Start a SparkSession
+import findspark
+findspark.init()
+from pyspark.sql import SparkSession
+import time
+from pyspark import SparkFiles
 ```
 
 ### 3. Read CSV Data
 
 Read the `home_sales_revised.csv` data into a Spark DataFrame. Use the appropriate PySpark functions for reading CSV data.
 
-```python
-# Example: Reading CSV data
-df = spark.read.csv("path/to/home_sales_revised.csv", header=True, inferSchema=True)
+```url = "https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.2/22-big-data/home_sales_revised.csv"
+
+spark.sparkContext.addFile(url)
+df = spark.read.csv("file://" + SparkFiles.get("home_sales_revised.csv"), header=True, inferSchema=True)
 ```
 
 ### 4. Create Temporary Table
 
 Create a temporary table called `home_sales` using the `createOrReplaceTempView` method.
 
-```python
-# Example: Creating a temporary table
-df.createOrReplaceTempView('home_sales')
+```df.createOrReplaceTempView('home_sales')
+
+result = spark.sql("SELECT * FROM home_sales")
+result.show()
 ```
 
 ### 5. Answer Questions using SparkSQL
