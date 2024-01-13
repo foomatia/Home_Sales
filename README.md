@@ -60,122 +60,78 @@ result.show()
 
 ### 5. Answer Questions using SparkSQL
 
-Answer the questions using SparkSQL queries. For example:
-
-```python
-# Example: Average price for a four-bedroom house sold for each year
-query = """
-    SELECT
-        YEAR(Sale_Date) AS Year,
-        ROUND(AVG(Price), 2) AS Avg_Price
-    FROM
-        home_sales
-    WHERE
-        Bedrooms = 4
-    GROUP BY
-        YEAR(Sale_Date)
-    ORDER BY
-        Year
-"""
-result = spark.sql(query)
-result.show()
-```
+Answer the following questions using SparkSQL queries.
+1. What is the average price for a four bedroom house sold in each year rounded to two decimal places?
+2. What is the average price of a home for each year the home was built that have 3 bedrooms and 3 bathrooms rounded to two decimal places?
+3. What is the average price of a home for each year built that have 3 bedrooms, 3 bathrooms, with two floors, and are greater than or equal to 2,000 square feet rounded to two decimal places?
+4. What is the "view" rating for the average price of a home, rounded to two decimal places, where the homes are greater than or equal to $350,000? Although this is a small dataset, determine the run time for this query.
 
 ### 6. Cache Temporary Table
 
 Cache the `home_sales` temporary table using the `cache()` method.
 
-```python
-# Example: Caching the temporary table
-spark.sql("SELECT * FROM home_sales").cache()
+```spark.sql("cache table home_sales")
 ```
 
 ### 7. Check if Temporary Table is Cached
 
 Check if the `home_sales` temporary table is cached using the `isCached` method.
 
-```python
-# Example: Checking if the table is cached
-is_cached = spark.catalog.isCached('home_sales')
+```is_cached = spark.catalog.isCached('home_sales')
 print(is_cached)
 ```
 
 ### 8. Run Query on Cached Data
 
-Run a query on the cached data and determine the runtime. Compare it with the uncached runtime.
+Using the cached data, run the query that filters out the view ratings with average price greater than or equal to $350,000. Determine the runtime and compare it to uncached runtime.
 
-```python
-# Example: Query on cached data and runtime measurement
-start_time_cached = time.time()
-query_cached = """
-    SELECT
-        AVG(Price) AS Avg_Price
-    FROM
-        home_sales
-    WHERE
-        Price < 350000
-"""
-result_cached = spark.sql(query_cached)
-result_cached.show()
-end_time_cached = time.time()
-print("--- Cached Query Runtime: %s seconds ---" % (end_time_cached - start_time_cached))
-```
++------------------+
+|         Avg_Price|
++------------------+
+|235148.14186445266|
++------------------+
+
+--- Cached Query Runtime: 0.380997896194458 seconds ---
 
 ### 9. Partition by "date_built" Field on Formatted Parquet Data
 
 Partition the data by the "date_built" field when writing it in Parquet format. Use the `write.partitionBy` method.
 
-```python
-# Example: Partitioning by "date_built" field
-df.write.partitionBy("date_built").parquet("/path/to/output")
+```df.write.partitionBy("date_built").parquet("/path/to/output")
 ```
 
 ### 10. Create Temporary Table for Parquet Data
 
 Create a temporary table for the Parquet data.
 
-```python
-# Example: Creating a temporary table for Parquet data
-parquet_df.createOrReplaceTempView('parquet_temp')
+```parquet_path = "/path/to/output"
+read_df = spark.read.parquet(parquet_path)
 ```
 
 ### 11. Run Query on Parquet Data
 
-Run a query on the Parquet data and determine the runtime. Compare it with the uncached runtime.
+Run a query that filters out the view ratings with average price of greater than or equal to $350,000 on the Parquet data and determine the runtime. Compare it with the uncached runtime.
 
-```python
-# Example: Query on Parquet data and runtime measurement
-start_time_parquet = time.time()
-query_parquet = """
-    SELECT
-        AVG(Price) AS Avg_Price
-    FROM
-        parquet_temp
-    WHERE
-        Price < 350000
-"""
-result_parquet = spark.sql(query_parquet)
-result_parquet.show()
-end_time_parquet = time.time()
-print("--- Parquet Query Runtime: %s seconds ---" % (end_time_parquet - start_time_parquet))
-```
++------------------+
+|         Avg_Price|
++------------------+
+|235148.14186445266|
++------------------+
+
+--- Parquet Query Runtime: 0.6985626220703125 seconds ---
 
 ### 12. Uncache Temporary Table
 
-Uncache the `home_sales` temporary table using the `unpersist` method.
+Uncache the `home_sales` temporary table.
 
-```python
-# Example: Uncaching the temporary table
-spark.catalog.uncacheTable('home_sales')
+```spark.sql("uncache table home_sales")
 ```
 
 ### 13. Verify Temporary Table is Uncached
 
 Verify that the `home_sales` temporary table is no longer cached using PySpark.
 
-```python
-# Example: Verifying if the table is uncached
-is_cached_after_uncache = spark.catalog.isCached('home_sales')
+```is_cached_after_uncache = spark.catalog.isCached("home_sales")
 print(is_cached_after_uncache)
 ```
 
@@ -183,4 +139,3 @@ print(is_cached_after_uncache)
 
 Download your `Home_Sales.ipynb` file and upload it into your "Home_Sales" GitHub repository. Ensure your notebook reflects all the necessary code, explanations, and results.
 
-Feel free to adjust examples based on your specific DataFrame and column names in your notebook.
