@@ -78,16 +78,15 @@ Answer the following questions using SparkSQL queries.
 
 Cache the `home_sales` temporary table using the `cache()` method.
 
-```--spark.sql("cache table home_sales")--
-```
+spark.sql("cache table home_sales")
 
 ### 7. Check if Temporary Table is Cached
 
 Check if the `home_sales` temporary table is cached using the `isCached` method.
 
-```--is_cached = spark.catalog.isCached('home_sales')--
+is_cached = spark.catalog.isCached('home_sales')
 print(is_cached)
-```
+
 
 ### 8. Run Query on Cached Data
 
@@ -105,16 +104,15 @@ Using the cached data, run the query that filters out the view ratings with aver
 
 Partition the data by the "date_built" field when writing it in Parquet format. Use the `write.partitionBy` method.
 
-```df.write.partitionBy("date_built").parquet("/path/to/output")
-```
+df.write.partitionBy("date_built").parquet("/path/to/output")
 
 ### 10. Create Temporary Table for Parquet Data
 
 Create a temporary table for the Parquet data.
 
-```parquet_path = "/path/to/output"
+parquet_path = "/path/to/output"
 read_df = spark.read.parquet(parquet_path)
-```
+
 
 ### 11. Run Query on Parquet Data
 
@@ -132,16 +130,14 @@ Run a query that filters out the view ratings with average price of greater than
 
 Uncache the `home_sales` temporary table.
 
-```spark.sql("uncache table home_sales")
-```
+spark.sql("uncache table home_sales")
 
 ### 13. Verify Temporary Table is Uncached
 
 Verify that the `home_sales` temporary table is no longer cached using PySpark.
 
-```is_cached_after_uncache = spark.catalog.isCached("home_sales")
+is_cached_after_uncache = spark.catalog.isCached("home_sales")
 print(is_cached_after_uncache)
-```
 
 ### 14. Download and Upload
 
