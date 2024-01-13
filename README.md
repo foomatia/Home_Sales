@@ -66,18 +66,26 @@ Answer the following questions using SparkSQL queries.
 3. What is the average price of a home for each year built that have 3 bedrooms, 3 bathrooms, with two floors, and are greater than or equal to 2,000 square feet rounded to two decimal places?
 4. What is the "view" rating for the average price of a home, rounded to two decimal places, where the homes are greater than or equal to $350,000? Although this is a small dataset, determine the run time for this query.
 
++------------------+
+|         Avg_Price|
++------------------+
+|473796.26220224716|
++------------------+
+
+--- 1.049288272857666 seconds ---
+
 ### 6. Cache Temporary Table
 
 Cache the `home_sales` temporary table using the `cache()` method.
 
-```spark.sql("cache table home_sales")
+```--spark.sql("cache table home_sales")--
 ```
 
 ### 7. Check if Temporary Table is Cached
 
 Check if the `home_sales` temporary table is cached using the `isCached` method.
 
-```is_cached = spark.catalog.isCached('home_sales')
+```--is_cached = spark.catalog.isCached('home_sales')--
 print(is_cached)
 ```
 
